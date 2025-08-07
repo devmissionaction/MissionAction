@@ -1,12 +1,7 @@
+import { type Metadata } from 'next'
 import AcheterNumeroClient from './AcheterNumeroClient'
 
-type Props = {
-  params: {
-    slug: string
-  }
-}
-
-export default function AcheterNumeroPage({ params }: Props) {
-    const { slug } = params
-    return <AcheterNumeroClient slug={params.slug} />
+// params vient directement de Next.js
+export default function AcheterNumeroPage({ params }: { params: { slug: string } }) {
+  return <AcheterNumeroClient slug={params.slug} />
 }
