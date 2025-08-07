@@ -1,5 +1,6 @@
 import { client } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
+import type { PortableTextBlock } from '@portabletext/types'
 
 type Article = {
   _id: string
@@ -13,7 +14,7 @@ type Article = {
 
 type Issue = {
   title: string
-  description?: any
+  description?: PortableTextBlock[]
   coverImage?: { asset: { url: string } }
   articles?: Article[]
 }

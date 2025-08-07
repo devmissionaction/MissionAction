@@ -1,13 +1,14 @@
 'use client'
 
 import { PortableText } from '@portabletext/react'
+import type { PortableTextBlock } from '@portabletext/types'
 
 type AboutPageData = {
   heroImage?: {
     asset: { url: string }
     alt?: string
   }
-  content?: any
+  content?: PortableTextBlock[]
 }
 
 type TeamMember = {
@@ -19,7 +20,7 @@ type TeamMember = {
       url: string
     }
   }
-  bio: any
+  bio: PortableTextBlock[]
 }
 
 export default function AboutPageClient({

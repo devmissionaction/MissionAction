@@ -1,12 +1,13 @@
 import { client } from '@/lib/sanity'
 import AboutPageClient from './AboutPageClient'
+import type { PortableTextBlock } from '@portabletext/types'
 
 type AboutPageData = {
   heroImage?: {
     asset: { url: string }
     alt?: string
   }
-  content?: any
+  content?: PortableTextBlock[]
 }
 
 type TeamMember = {
@@ -18,7 +19,7 @@ type TeamMember = {
       url: string
     }
   }
-  bio: any
+  bio: PortableTextBlock[]
 }
 
 export default async function AboutPage() {

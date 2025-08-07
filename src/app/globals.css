@@ -41,16 +41,18 @@ body {
 }
 
 .navbar-text:hover {
-  font-family: 'Gotham Bold Italic', sans-serif;
+  font-family: 'Avega Italic', sans-serif;
   background-color: black;
   color: white;
+  font-size: 14px;
   padding-left: 2px;
   padding-right: 2px;
 }
 .navbar-text:active {
-  font-family: 'Gotham Bold Italic', sans-serif;
+  font-family: 'Avega Italic', sans-serif;
   background-color: black;
   color: white;
+  font-size: 14px;
   padding-left: 2px;
   padding-right: 2px;
 }
