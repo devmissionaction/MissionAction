@@ -1,6 +1,7 @@
 
 import { client } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
+import type { PortableTextBlock } from '@portabletext/types'
 
 type Params = {
   params: {
@@ -10,7 +11,7 @@ type Params = {
 
 type Post = {
   title: string
-  body: any
+  body: PortableTextBlock[]
   type: 'free' | 'paid'
   mainImage?: {
     asset: { url: string }
