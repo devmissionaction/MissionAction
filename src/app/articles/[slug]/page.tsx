@@ -2,12 +2,6 @@ import { client } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
 import type { PortableTextBlock } from '@portabletext/types'
 
-interface Params {
-  params: {
-    slug: string
-  }
-}
-
 type Post = {
   title: string
   body: PortableTextBlock[]
@@ -18,8 +12,8 @@ type Post = {
   }
 }
 
-export default async function ArticlePage({ params }: Params) {
-  const slug = params.slug
+export default async function ArticlePage({ params }: { params: { slug: string } }) {
+  const { slug } = params
 
   const post: Post = await client.fetch(
     `*[_type == "post" && slug.current == $slug][0]{
@@ -53,4 +47,12 @@ export default async function ArticlePage({ params }: Params) {
       </article>
     </main>
   )
+}
+
+export async function generateStaticParams() {
+  const slugs: string[] = await client.fetch(`
+    *[_type == "post" && defined(slug.current)][].slug.current
+  `)
+
+  return slugs.map((slug) => ({ slug }))
 }
