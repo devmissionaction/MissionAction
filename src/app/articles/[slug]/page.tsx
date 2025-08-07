@@ -1,6 +1,7 @@
 import { client } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
 import type { PortableTextBlock } from '@portabletext/types'
+import { notFound } from 'next/navigation'
 
 type Post = {
   title: string
@@ -12,10 +13,10 @@ type Post = {
   }
 }
 
-export default async function ArticlePage({ params }: { params: { slug: string } }) {
+export default async function Page({ params }: { params: { slug: string } }) {
   const { slug } = params
 
-  const post: Post = await client.fetch(
+  const post: Post | null = await client.fetch(
     `*[_type == "post" && slug.current == $slug][0]{
       title,
       body,
@@ -30,7 +31,7 @@ export default async function ArticlePage({ params }: { params: { slug: string }
     { slug }
   )
 
-  if (!post) return <div>Article introuvable.</div>
+  if (!post) return notFound()
 
   return (
     <main className="max-w-3xl mx-auto p-6">
