@@ -1,7 +1,13 @@
 import { client } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
 import type { PortableTextBlock } from '@portabletext/types'
-import { notFound } from 'next/navigation'
+import { notFound } from 'next/navigation' // utile si le slug est invalide
+
+type Props = {
+  params: {
+    slug: string
+  }
+}
 
 type Post = {
   title: string
@@ -13,7 +19,7 @@ type Post = {
   }
 }
 
-export default async function Page({ params }: { params: { slug: string } }) {
+export default async function ArticlePage({ params }: Props) {
   const { slug } = params
 
   const post: Post | null = await client.fetch(
@@ -48,12 +54,4 @@ export default async function Page({ params }: { params: { slug: string } }) {
       </article>
     </main>
   )
-}
-
-export async function generateStaticParams() {
-  const slugs: string[] = await client.fetch(`
-    *[_type == "post" && defined(slug.current)][].slug.current
-  `)
-
-  return slugs.map((slug) => ({ slug }))
 }
