@@ -1,4 +1,4 @@
-// /app/api/webhook/route.ts
+/* // /app/api/webhook/route.ts
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import Stripe from 'stripe'
@@ -57,4 +57,9 @@ export async function POST(req: Request) {
   }
 
   return NextResponse.json({ received: true })
+}
+ */
+
+export async function POST(req: Request) {
+  return new Response('Webhook disabled', { status: 200 });
 }

@@ -1,12 +1,11 @@
 import { client } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
 import type { PortableTextBlock } from '@portabletext/types'
-import { notFound } from 'next/navigation' // utile si le slug est invalide
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 type Post = {
@@ -20,9 +19,9 @@ type Post = {
 }
 
 export default async function ArticlePage({ params }: Props) {
-  const { slug } = params
+  const { slug } = await params
 
-  const post: Post | null = await client.fetch(
+  const post: Post = await client.fetch(
     `*[_type == "post" && slug.current == $slug][0]{
       title,
       body,
@@ -37,7 +36,7 @@ export default async function ArticlePage({ params }: Props) {
     { slug }
   )
 
-  if (!post) return notFound()
+  if (!post) return <div>Article introuvable.</div>
 
   return (
     <main className="max-w-3xl mx-auto p-6">

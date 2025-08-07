@@ -1,12 +1,13 @@
 import AcheterNumeroClient from './AcheterNumeroClient'
 
 type Props = {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
-export default function AcheterNumeroPage({ params }: Props) {
-    const { slug } = params
-    return <AcheterNumeroClient slug={params.slug} />
+export default async function AcheterNumeroPage({ params }: Props) {
+  const { slug } = await params // on await params ici
+  return <AcheterNumeroClient slug={slug} />
 }
+

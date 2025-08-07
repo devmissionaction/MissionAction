@@ -21,13 +21,13 @@ type Issue = {
 }
 
 type Params = {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 export default async function NumeroPage({ params }: Params) {
-  const slug = params.slug
+  const { slug } = await params
 
   const issue: Issue = await client.fetch(
     `*[_type == "issue" && slug.current == $slug][0]{
