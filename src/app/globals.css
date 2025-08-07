@@ -56,3 +56,9 @@ body {
   padding-left: 2px;
   padding-right: 2px;
 }
+
+.text-title{
+  font-family: 'Avega Italic', sans-serif;
+  color: white;
+  font-size: 74px;
+}

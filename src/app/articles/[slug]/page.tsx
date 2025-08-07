@@ -1,9 +1,8 @@
-
 import { client } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
 import type { PortableTextBlock } from '@portabletext/types'
 
-type Params = {
+interface Params {
   params: {
     slug: string
   }
@@ -30,7 +29,8 @@ export default async function ArticlePage({ params }: Params) {
       mainImage {
         asset -> {
           url
-        }
+        },
+        alt
       }
     }`,
     { slug }

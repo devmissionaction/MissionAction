@@ -4,6 +4,8 @@ import { useKeenSlider } from 'keen-slider/react'
 import 'keen-slider/keen-slider.min.css'
 import Link from 'next/link'
 import { useState } from 'react'
+import { FiChevronLeft, FiChevronRight } from 'react-icons/fi'
+
 
 type Issue = {
   _id: string
@@ -47,18 +49,18 @@ export function IssuesCarousel({ issues }: { issues: Issue[] }) {
           <div key={issue._id} className="keen-slider__slide">
             <Link
               href={`/numeros/${issue.slug.current}`}
-              className="relative block rounded-lg overflow-hidden shadow-lg group h-96"
+              className="relative block rounded-lg overflow-hidden shadow-lg group h-[32rem]" // ← HAUTEUR AUGMENTÉE
             >
               {issue.coverImage?.asset?.url && (
-                <div className="w-full h-96 relative">
+                <div className="w-full h-[32rem] relative"> {/* ← HAUTEUR AUGMENTÉE */}
                   <img
                     src={issue.coverImage.asset.url}
                     alt={issue.coverImage.alt || issue.title}
                     className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                 </div>
-
               )}
+
 
               {/* Overlay assombrissant */}
               <div className="absolute inset-0 bg-black/50" />
@@ -77,18 +79,20 @@ export function IssuesCarousel({ issues }: { issues: Issue[] }) {
       {/* Boutons de navigation */}
       <button
         onClick={() => instanceRef.current?.prev()}
-        className="absolute left-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow hover:scale-105 transition z-10"
+        className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white p-3 rounded-full shadow hover:scale-110 transition z-10 cursor-pointer"
         aria-label="Précédent"
       >
-        ◀
+        <FiChevronLeft className="w-6 h-6 text-gray-800" />
       </button>
+
       <button
         onClick={() => instanceRef.current?.next()}
-        className="absolute right-0 top-1/2 transform -translate-y-1/2 bg-white p-2 rounded-full shadow hover:scale-105 transition z-10"
+        className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-white p-3 rounded-full shadow hover:scale-110 transition z-10 cursor-pointer"
         aria-label="Suivant"
       >
-        ▶
+        <FiChevronRight className="w-6 h-6 text-gray-800" />
       </button>
+
     </div>
   )
 }

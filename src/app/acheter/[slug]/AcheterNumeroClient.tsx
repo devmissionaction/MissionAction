@@ -35,7 +35,7 @@ export default function AcheterNumeroClient({ slug }: { slug: string }) {
 
   return (
     <main className="min-h-screen flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white p-6 rounded-lg shadow text-center">
+      <div className="max-w-md w-full bg-white p-6 rounded-lg shadow-lg text-center">
         <h1 className="text-2xl font-bold mb-4">Acheter le numéro : {slug}</h1>
         <p className="mb-4 text-gray-600">
           Entrez votre adresse email. Vous recevrez le numéro PDF après le paiement.
@@ -53,7 +53,7 @@ export default function AcheterNumeroClient({ slug }: { slug: string }) {
         <button
           onClick={handleCheckout}
           disabled={loading || !email}
-          className="bg-indigo-600 text-white px-6 py-2 rounded hover:bg-indigo-700 disabled:opacity-50 w-full"
+          className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 disabled:opacity-50 disabled:cursor-default w-full cursor-pointer"
         >
           {loading ? 'Redirection vers Stripe...' : 'Payer maintenant'}
         </button>

@@ -57,8 +57,7 @@ export default async function HomePage() {
         )}
         <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
           <h1
-            className="text-white text-5xl sm:text-6xl font-bold text-center"
-            style={{ fontFamily: 'Gotham Bold Italic, sans-serif' }}
+            className="text-white text-5xl font-bold text-center text-title"
           >
             Mission Action
           </h1>

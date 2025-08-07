@@ -41,7 +41,7 @@ export default function AboutPageClient({
             className="w-full h-full object-cover"
           />
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <h1 className="text-white text-4xl font-bold text-center">Qui sommes-nous ?</h1>
+            <h1 className="text-white text-4xl font-bold text-center text-title">Qui sommes-nous ?</h1>
           </div>
         </section>
       )}
@@ -53,7 +53,7 @@ export default function AboutPageClient({
 
       {/* ÉQUIPE (tous les membres, quinconce, sans pagination) */}
       <section className="min-h-screen px-6 py-16 bg-gray-100">
-        <h2 className="text-3xl font-bold text-center mb-12">Notre équipe</h2>
+        <h2 className="text-3xl font-bold text-center mb-12 ">Notre équipe</h2>
         <div className="max-w-6xl mx-auto flex flex-col gap-16">
           {teamMembers.map((member, index) => (
             <div
@@ -65,11 +65,11 @@ export default function AboutPageClient({
               <img
                 src={member.photo?.asset?.url}
                 alt={member.name}
-                className="w-48 h-48 object-cover rounded-full border-4 border-white shadow-lg"
+                className="w-48 h-48 object-cover rounded-full border-4 border-red-700 shadow-lg"
               />
               <div className="md:w-2/3">
                 <h3 className="text-xl font-bold">{member.name}</h3>
-                <p className="text-indigo-600 font-semibold mb-2">{member.role}</p>
+                <p className="text-red-700 font-semibold mb-2">{member.role}</p>
                 <div className="prose prose-sm">
                   <PortableText value={member.bio} />
                 </div>
