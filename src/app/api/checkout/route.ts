@@ -1,36 +1,44 @@
 // /app/api/checkout/route.ts
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
-import sanityClient from '@sanity/client'
+import { createClient } from '@sanity/client'
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-07-30.basil",
+// --- Vérification des variables d'env ---
+if (!process.env.STRIPE_SECRET_KEY) throw new Error('❌ STRIPE_SECRET_KEY manquant')
+if (!process.env.SANITY_PROJECT_ID) throw new Error('❌ SANITY_PROJECT_ID manquant')
+if (!process.env.SANITY_DATASET) throw new Error('❌ SANITY_DATASET manquant')
+
+// --- Init Stripe ---
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2025-07-30.basil',
 })
 
-if (!process.env.SANITY_PROJECT_ID || !process.env.SANITY_DATASET) {
-  throw new Error('SANITY_PROJECT_ID ou SANITY_DATASET manquant dans les variables d’environnement');
-}
-
-const client = sanityClient({
-  projectId: process.env.SANITY_PROJECT_ID!,
-  dataset: process.env.SANITY_DATASET!,
+// --- Init Sanity ---
+const client = createClient({
+  projectId: process.env.SANITY_PROJECT_ID,
+  dataset: process.env.SANITY_DATASET,
   apiVersion: '2023-08-01',
+  token: process.env.SANITY_API_TOKEN, // facultatif si lecture publique
   useCdn: false,
 })
 
 export async function POST(req: Request) {
   try {
-    const { numeroId } = await req.json()
+    const { numeroSlug } = await req.json()
 
-    // Chercher le priceId du numéro dans Sanity
-    const query = `*[_type == "numero" && _id == $numeroId][0]{ priceId }`
-    const numero = await client.fetch(query, { numeroId })
-
-    if (!numero?.priceId) {
-      return NextResponse.json({ error: 'Price ID non trouvé pour ce numéro' }, { status: 400 })
+    if (!numeroSlug) {
+      return NextResponse.json({ error: 'numeroSlug manquant' }, { status: 400 })
     }
 
-    // Créer la session Stripe avec ce priceId
+    // 1️⃣ Récupération du priceId dans Sanity
+    const query = `*[_type == "numero" && slug.current == $slug][0]{ title, priceId }`
+    const numero = await client.fetch(query, { slug: numeroSlug })
+
+    if (!numero || !numero.priceId) {
+      return NextResponse.json({ error: 'Numéro ou priceId introuvable' }, { status: 404 })
+    }
+
+    // 2️⃣ Création de la session Stripe
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
@@ -40,13 +48,13 @@ export async function POST(req: Request) {
         },
       ],
       mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cancel`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
     })
 
     return NextResponse.json({ url: session.url })
-  } catch (err: any) {
-    console.error(err)
-    return NextResponse.json({ error: err.message }, { status: 500 })
+  } catch (err) {
+    console.error('❌ Erreur API Checkout', err)
+    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
   }
 }
