@@ -7,6 +7,10 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-07-30.basil",
 })
 
+if (!process.env.SANITY_PROJECT_ID || !process.env.SANITY_DATASET) {
+  throw new Error('SANITY_PROJECT_ID ou SANITY_DATASET manquant dans les variables d’environnement');
+}
+
 const client = sanityClient({
   projectId: process.env.SANITY_PROJECT_ID!,
   dataset: process.env.SANITY_DATASET!,
@@ -18,7 +22,7 @@ export async function POST(req: Request) {
   try {
     const { numeroId } = await req.json()
 
-    // 🔍 Chercher le priceId du numéro dans Sanity
+    // Chercher le priceId du numéro dans Sanity
     const query = `*[_type == "numero" && _id == $numeroId][0]{ priceId }`
     const numero = await client.fetch(query, { numeroId })
 
@@ -26,7 +30,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Price ID non trouvé pour ce numéro' }, { status: 400 })
     }
 
-    // 📦 Créer la session Stripe avec ce priceId
+    // Créer la session Stripe avec ce priceId
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       line_items: [
