@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { client } from '@/lib/sanity'
 
-// ✅ Initialisation Stripe
+// Initialisation Stripe
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2025-07-30.basil',
 })
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
   try {
     const { numeroSlug } = await req.json()
 
-    // 🔎 Récupérer le numéro depuis Sanity
+    // Récupérer le numéro depuis Sanity
     const numero = await client.fetch(
       `*[_type == "issue" && slug.current == $slug][0]{
         title,
@@ -24,7 +24,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Numéro introuvable ou sans priceId' }, { status: 400 })
     }
 
-    // ✅ Créer une session Stripe Checkout
+    // Créer une session Stripe Checkout
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',

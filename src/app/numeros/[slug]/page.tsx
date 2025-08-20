@@ -88,7 +88,7 @@ export default async function NumeroPage({ params }: Params) {
             <p className="text-gray-500 text-sm">Un aperçu libre du numéro en cours.</p>
           </a>
           
-          {/* ✅ Achat à l’unité (client component) */}
+          {/* Achat à l’unité (client component) */}
           <BuyButton slug={slug} />
 
           {/* Abonnement */}
