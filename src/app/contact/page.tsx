@@ -24,7 +24,6 @@ export default async function ContactPage() {
 
   return (
     <main>
-      {/* HERO IMAGE pleine hauteur */}
       {data?.heroImage?.asset?.url && (
         <section className="w-full h-screen relative">
           <img
@@ -40,7 +39,6 @@ export default async function ContactPage() {
         </section>
       )}
 
-      {/* CONTENU DE LA PAGE - Stylisé */}
       <section className="bg-[#fdfcf9] text-[#222] py-16 px-6">
         <div className="max-w-2xl mx-auto">
           <h2 className="text-3xl font-bold mb-6 text-center">Prendre contact</h2>

@@ -51,7 +51,7 @@ export default function AboutPageClient({
         {data.content && <PortableText value={data.content} />}
       </section>
 
-      {/* ÉQUIPE (tous les membres, quinconce, sans pagination) */}
+      {/* ÉQUIPE */}
       <section className="min-h-screen px-6 py-16 bg-gray-100">
         <h2 className="text-3xl font-bold text-center mb-12 ">Notre équipe</h2>
         <div className="max-w-6xl mx-auto flex flex-col gap-16">

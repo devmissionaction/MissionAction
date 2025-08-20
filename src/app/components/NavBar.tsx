@@ -24,14 +24,12 @@ export default function Navbar() {
         isScrolled ? 'bg-white text-black shadow' : 'bg-transparent text-white'
       )}
     >
-      {/* Logo */}
       <div className="flex items-center flex-shrink-0">
         <Link href="/" className="flex items-center gap-2">
           <Image src="/logo.svg" alt="Mission Action" width={48} height={48} />
         </Link>
       </div>
 
-      {/* Navigation */}
       <nav className="hidden md:flex gap-8 text-sm font-medium justify-center flex-1">
         <Link href="/">Accueil</Link>
         <Link href="/about">Qui sommes nous ?</Link>

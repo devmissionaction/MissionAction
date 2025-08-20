@@ -1,36 +1,99 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+Mission Action - Revue & Boutique en Ligne
+Bienvenue sur le dépôt GitHub de Mission Action, une plateforme web moderne conçue pour la vente des numéros de la revue Mission Action. Ce projet intègre une boutique en ligne performante avec un back-office de gestion de contenu (CMS) puissant pour une administration simple et efficace.
 
-## Getting Started
+✨ Fonctionnalités Principales
+🛒 Boutique en Ligne Complète : Parcourez les différents numéros de la revue, ajoutez-les au panier et procédez au paiement de manière fluide et sécurisée.
 
-First, run the development server:
+💳 Intégration de Paiement Stripe : Système de paiement robuste et sécurisé pour gérer les transactions.
 
-```bash
+📬 Envoi Automatisé d'Emails : Après chaque achat, un email de confirmation est automatiquement envoyé au client via Resend, avec le numéro de la revue acheté en pièce jointe (PDF).
+
+🚀 Performances optimisées : Construit avec Next.js, le site offre des temps de chargement rapides et un excellent référencement naturel (SEO).
+
+✍️ Gestion de Contenu Simplifiée : Le contenu du site (produits, textes, images) est entièrement géré via Sanity.io, un CMS headless flexible et intuitif.
+
+🎨 Design Moderne et Adaptatif : L'interface est développée avec Tailwind CSS, garantissant une expérience utilisateur agréable sur tous les appareils (ordinateurs, tablettes, mobiles).
+
+🔒 Webhooks Sécurisés : Utilisation de webhooks Stripe pour gérer les événements de paiement de manière fiable et sécurisée, déclenchant l'envoi des produits numériques.
+
+🛠️ Technologies Utilisées
+Ce projet est construit avec un ensemble de technologies modernes et performantes :
+
+Framework Front-end : Next.js (React)
+
+Styling : Tailwind CSS
+
+Gestion de Contenu (CMS) : Sanity.io
+
+Paiement en Ligne : Stripe
+
+Envoi d'Emails Transactionnels : Resend
+
+Langage : TypeScript
+
+🚀 Démarrage Rapide
+Suivez ces étapes pour lancer le projet sur votre machine locale.
+
+1. Prérequis
+Assurez-vous d'avoir installé les éléments suivants :
+
+Node.js (version 18.x ou supérieure)
+
+npm ou yarn
+
+2. Installation
+Clonez le dépôt :
+
+git clone https://github.com/devmissionaction/MissionAction.git
+cd MissionAction
+
+Installez les dépendances :
+
+npm install
+# ou
+yarn install
+
+3. Configuration de l'environnement
+Créez un fichier .env.local à la racine du projet en copiant le modèle .env.example (s'il existe) ou en créant un nouveau fichier.
+
+Ajoutez les variables d'environnement suivantes dans votre fichier .env.local avec vos propres clés d'API :
+
+# Clés publiques (utilisables côté client)
+NEXT_PUBLIC_STRIPE_PUBLIC_KEY=pk_test_...
+NEXT_PUBLIC_SANITY_PROJECT_ID=...
+NEXT_PUBLIC_SANITY_DATASET=production
+NEXT_PUBLIC_URL=http://localhost:3000
+
+# Clés secrètes (uniquement côté serveur)
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+RESEND_API_KEY=re_...
+SANITY_API_TOKEN=...
+
+Stripe : Vous trouverez vos clés dans votre Dashboard Stripe.
+
+Sanity : Les informations du projet sont disponibles dans votre Dashboard Sanity. Le token d'API doit avoir les permissions de lecture.
+
+Resend : La clé d'API se trouve dans votre Dashboard Resend.
+
+4. Lancer le serveur de développement
+Une fois l'installation et la configuration terminées, lancez le serveur :
+
 npm run dev
-# or
+# ou
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Ouvrez http://localhost:3000 dans votre navigateur pour voir l'application.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+🤝 Contribution
+Les contributions sont les bienvenues ! Si vous souhaitez améliorer le projet, n'hésitez pas à forker le dépôt et à créer une Pull Request.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Forkez le projet.
 
-## Learn More
+Créez votre branche de fonctionnalité (git checkout -b feature/NouvelleFonctionnalite).
 
-To learn more about Next.js, take a look at the following resources:
+Commitez vos changements (git commit -m 'Ajout de NouvelleFonctionnalite').
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Pushez vers la branche (git push origin feature/NouvelleFonctionnalite).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Ouvrez une Pull Request.

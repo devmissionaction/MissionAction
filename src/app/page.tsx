@@ -46,7 +46,6 @@ export default async function HomePage() {
 
   return (
     <main>
-      {/* HERO en plein écran */}
       <section className="w-full h-screen relative">
         {home?.heroImage?.asset?.url && (
           <img
@@ -64,7 +63,6 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* SECTION CARROUSEL en plein écran */}
       <section className="w-full h-screen flex flex-col justify-center px-6">
         <h2 className="text-3xl font-semibold mb-6 text-center">Nos derniers numéros</h2>
         <IssuesCarousel issues={issues} />

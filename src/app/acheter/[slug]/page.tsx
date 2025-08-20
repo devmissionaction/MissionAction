@@ -7,7 +7,7 @@ type Props = {
 }
 
 export default async function AcheterNumeroPage({ params }: Props) {
-  const { slug } = await params // on await params ici
+  const { slug } = await params
   return <AcheterNumeroClient slug={slug} />
 }
 

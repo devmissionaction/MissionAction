@@ -49,10 +49,10 @@ export function IssuesCarousel({ issues }: { issues: Issue[] }) {
           <div key={issue._id} className="keen-slider__slide">
             <Link
               href={`/numeros/${issue.slug.current}`}
-              className="relative block rounded-lg overflow-hidden shadow-lg group h-[32rem]" // ← HAUTEUR AUGMENTÉE
+              className="relative block rounded-lg overflow-hidden shadow-lg group h-[32rem]" 
             >
               {issue.coverImage?.asset?.url && (
-                <div className="w-full h-[32rem] relative"> {/* ← HAUTEUR AUGMENTÉE */}
+                <div className="w-full h-[32rem] relative"> 
                   <img
                     src={issue.coverImage.asset.url}
                     alt={issue.coverImage.alt || issue.title}
@@ -62,10 +62,8 @@ export function IssuesCarousel({ issues }: { issues: Issue[] }) {
               )}
 
 
-              {/* Overlay assombrissant */}
               <div className="absolute inset-0 bg-black/50" />
 
-              {/* Titre par-dessus */}
               <div className="absolute inset-0 flex items-center justify-center">
                 <h3 className="text-white text-2xl font-semibold px-4 text-center drop-shadow-lg">
                   {issue.title}
@@ -76,7 +74,6 @@ export function IssuesCarousel({ issues }: { issues: Issue[] }) {
         ))}
       </div>
 
-      {/* Boutons de navigation */}
       <button
         onClick={() => instanceRef.current?.prev()}
         className="absolute left-4 top-1/2 transform -translate-y-1/2 bg-white p-3 rounded-full shadow hover:scale-110 transition z-10 cursor-pointer"

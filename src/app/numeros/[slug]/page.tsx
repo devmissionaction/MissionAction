@@ -54,7 +54,6 @@ export default async function NumeroPage({ params }: Params) {
 
   return (
     <main>
-      {/* Section 1 - Présentation du numéro */}
       <section className="min-h-screen flex flex-col md:flex-row items-center justify-center gap-12 p-8 max-w-6xl mx-auto">
         {issue.coverImage?.asset?.url && (
           <img
@@ -73,12 +72,10 @@ export default async function NumeroPage({ params }: Params) {
         </div>
       </section>
 
-      {/* Section 2 - Galerie de liens */}
       <section className="h-screen bg-gray-100 flex flex-col items-center justify-center px-6">
         <h2 className="text-4xl font-bold mb-16 tracking-tight">Accès au contenu</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl w-full">
           
-          {/* Article gratuit */}
           <a
             href={`/articles/${issue.articles?.find((a) => a.type === 'free')?.slug.current ?? '#'}`}
             className="group bg-white p-8 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1 text-center flex flex-col items-center"
@@ -88,10 +85,8 @@ export default async function NumeroPage({ params }: Params) {
             <p className="text-gray-500 text-sm">Un aperçu libre du numéro en cours.</p>
           </a>
           
-          {/* Achat à l’unité (client component) */}
           <BuyButton slug={slug} />
 
-          {/* Abonnement */}
           <a
             href="/abonnement"
             className="group bg-white p-8 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1 text-center flex flex-col items-center"
