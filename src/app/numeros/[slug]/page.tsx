@@ -1,7 +1,8 @@
 import { client } from '@/lib/sanity'
 import { PortableText } from '@portabletext/react'
 import type { PortableTextBlock } from '@portabletext/types'
-import { FiFileText, FiBox, FiShoppingCart } from 'react-icons/fi'
+import { FiFileText, FiBox } from 'react-icons/fi'
+import BuyButton from '@/app/components/BuyButton'
 
 type Article = {
   _id: string
@@ -73,7 +74,6 @@ export default async function NumeroPage({ params }: Params) {
       </section>
 
       {/* Section 2 - Galerie de liens */}
-
       <section className="h-screen bg-gray-100 flex flex-col items-center justify-center px-6">
         <h2 className="text-4xl font-bold mb-16 tracking-tight">Accès au contenu</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10 max-w-6xl w-full">
@@ -88,15 +88,8 @@ export default async function NumeroPage({ params }: Params) {
             <p className="text-gray-500 text-sm">Un aperçu libre du numéro en cours.</p>
           </a>
           
-          {/* Achat à l’unité */}
-          <a
-            href={`/acheter/${slug}`}
-            className="group bg-white p-8 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition duration-300 transform hover:-translate-y-1 text-center flex flex-col items-center"
-          >
-            <FiShoppingCart className="text-4xl text-gray-800 stroke-red-700 mb-4 group-hover:scale-110 transition-transform duration-300" />
-            <h3 className="text-xl font-bold mb-2">Acheter ce numéro</h3>
-            <p className="text-gray-500 text-sm">Version papier ou numérique à l’unité.</p>
-          </a>
+          {/* ✅ Achat à l’unité (client component) */}
+          <BuyButton slug={slug} />
 
           {/* Abonnement */}
           <a
@@ -107,12 +100,8 @@ export default async function NumeroPage({ params }: Params) {
             <h3 className="text-xl font-bold mb-2">S’abonner à la revue</h3>
             <p className="text-gray-500 text-sm">Recevez tous les futurs numéros chez vous.</p>
           </a>
-
- 
         </div>
       </section>
-
-
     </main>
   )
 }

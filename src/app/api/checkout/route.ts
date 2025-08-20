@@ -3,22 +3,17 @@ import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 import { createClient } from '@sanity/client'
 
-// --- Vérification des variables d'env ---
-if (!process.env.STRIPE_SECRET_KEY) throw new Error('❌ STRIPE_SECRET_KEY manquant')
-if (!process.env.SANITY_PROJECT_ID) throw new Error('❌ SANITY_PROJECT_ID manquant')
-if (!process.env.SANITY_DATASET) throw new Error('❌ SANITY_DATASET manquant')
-
-// --- Init Stripe ---
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+// Stripe
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2025-07-30.basil',
 })
 
-// --- Init Sanity ---
+// Sanity
 const client = createClient({
-  projectId: process.env.SANITY_PROJECT_ID,
-  dataset: process.env.SANITY_DATASET,
+  projectId: process.env.SANITY_PROJECT_ID!,
+  dataset: process.env.SANITY_DATASET!,
   apiVersion: '2023-08-01',
-  token: process.env.SANITY_API_TOKEN, // facultatif si lecture publique
+  token: process.env.SANITY_API_TOKEN,
   useCdn: false,
 })
 
@@ -30,16 +25,23 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'numeroSlug manquant' }, { status: 400 })
     }
 
-    // 1️⃣ Récupération du priceId dans Sanity
-    const query = `*[_type == "numero" && slug.current == $slug][0]{ title, priceId }`
+    // Chercher dans Sanity le priceId lié au slug
+    const query = `*[_type == "numero" && slug.current == $slug][0]{
+      title,
+      priceId
+    }`
     const numero = await client.fetch(query, { slug: numeroSlug })
 
     if (!numero || !numero.priceId) {
-      return NextResponse.json({ error: 'Numéro ou priceId introuvable' }, { status: 404 })
+      return NextResponse.json(
+        { error: 'Numéro introuvable ou priceId manquant' },
+        { status: 404 }
+      )
     }
 
-    // 2️⃣ Création de la session Stripe
+    // Créer la session de paiement Stripe
     const session = await stripe.checkout.sessions.create({
+      mode: 'payment',
       payment_method_types: ['card'],
       line_items: [
         {
@@ -47,14 +49,13 @@ export async function POST(req: Request) {
           quantity: 1,
         },
       ],
-      mode: 'payment',
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL}/cancel`,
+      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/success`,
+      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/cancel`,
     })
 
     return NextResponse.json({ url: session.url })
-  } catch (err) {
-    console.error('❌ Erreur API Checkout', err)
-    return NextResponse.json({ error: 'Erreur serveur' }, { status: 500 })
+  } catch (error) {
+    console.error('Erreur Checkout:', error)
+    return NextResponse.json({ error: 'Erreur interne du serveur' }, { status: 500 })
   }
 }
