@@ -47,7 +47,7 @@ export async function POST(req: Request) {
   // ----- Gestion du paiement réussi -----
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
-    const email = session.customer_details?.email
+    const email = session.customer_details?.email || session.customer_email
 
     if (!email) {
       console.error('Email du client non trouvé dans la session Stripe')
