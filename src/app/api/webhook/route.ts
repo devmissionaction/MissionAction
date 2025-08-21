@@ -82,6 +82,7 @@ export async function POST(req: Request) {
         throw new Error(`Failed to fetch PDF: ${pdfResponse.statusText}`)
       }
       const pdfBuffer = await pdfResponse.arrayBuffer()
+      const pdfBase64 = Buffer.from(pdfBuffer).toString("base64")
 
       // Envoyer l'email avec Resend
       await resend.emails.send({
@@ -97,7 +98,7 @@ export async function POST(req: Request) {
         attachments: [
           {
             filename: `${numero.title}.pdf`,
-            content: Buffer.from(pdfBuffer),
+            content: pdfBase64, 
           },
         ],
       })
