@@ -95,12 +95,12 @@ export async function POST(req: Request) {
             <p>Vous trouverez votre numéro "${numero.title}" en pièce jointe.</p>
           </div>
         `,
-        attachments: [
+     /*    attachments: [
           {
             filename: `${numero.title}.pdf`,
             content: pdfBase64, 
           },
-        ],
+        ], */
       })
 
       console.log(`Email envoyé à ${email} avec ${numero.title}`)
