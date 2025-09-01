@@ -10,26 +10,27 @@ export async function POST(req: Request) {
   try {
     const { numeroSlug } = await req.json()
 
-    // Récupérer le numéro depuis Sanity
+    // --- CORRECTION ICI ---
+    // Utiliser "stripePriceId" pour correspondre au schéma Sanity
     const numero = await client.fetch(
       `*[_type == "issue" && slug.current == $slug][0]{
         title,
-        stripePriceId
+        stripePriceId 
       }`,
       { slug: numeroSlug }
     )
 
     if (!numero || !numero.stripePriceId) {
-      return NextResponse.json({ error: 'Numéro introuvable ou sans priceId' }, { status: 400 })
+      console.error('Numéro introuvable ou stripePriceId manquant pour le slug:', numeroSlug);
+      return NextResponse.json({ error: 'Numéro introuvable ou sans priceId' }, { status: 404 })
     }
 
-    // Créer une session Stripe Checkout
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
       line_items: [
         {
-          price: numero.stripePriceId, // récupéré depuis Sanity
+          price: numero.stripePriceId, // Utiliser la variable correcte
           quantity: 1,
         },
       ],
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ url: session.url })
   } catch (err: any) {
-    console.error('Erreur Stripe:', err)
+    console.error('Erreur Stripe Checkout:', err.message)
     return NextResponse.json({ error: err.message }, { status: 500 })
   }
 }
