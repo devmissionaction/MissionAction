@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 import Stripe from 'stripe'
 import { client } from '@/lib/sanity'
+import { serverClient } from '@/lib/sanity' // <-- IMPORT MODIFIÉ
 
 // Initialisation des clients
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -60,7 +61,7 @@ export async function POST(req: Request) {
     }`;
 
     try {
-      const numero = await client.fetch(query, { priceId: priceIdFromStripe });
+      const numero = await serverClient.fetch(query, { priceId: priceIdFromStripe });
 
       // C'est ici que l'erreur 404 se produisait.
       if (!numero || !numero.pdfUrl) {
