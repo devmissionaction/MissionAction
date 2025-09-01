@@ -1,22 +1,22 @@
+// src/lib/sanity.js
 import { createClient } from '@sanity/client'
 
-// Configuration de base utilisée par votre site public (côté client)
-const baseConfig = {
-  projectId: 'mafzawab', // Votre Project ID
-  dataset: 'production',   // Votre Dataset
-  apiVersion: '2024-01-01', // Utilisez une date récente
+const config = {
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'mafzawab',
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+  apiVersion: '2024-01-01',
 }
 
-// Client pour le côté client (navigateur) - rapide grâce au CDN
+// Client pour le navigateur (utilise le cache CDN)
 export const client = createClient({
-  ...baseConfig,
-  useCdn: true, 
+  ...config,
+  useCdn: true,
 })
 
-// --- CLIENT PRIVILÉGIÉ POUR LE CÔTÉ SERVEUR (WEBHOOKS, API ROUTES) ---
-// Ce client bypass le cache (useCdn: false) et s'authentifie avec un token.
+// Client pour le serveur (webhook, etc.)
+// N'utilise pas le cache et doit avoir un token pour s'authentifier
 export const serverClient = createClient({
-  ...baseConfig,
-  useCdn: false, // ESSENTIEL : On ne veut pas de cache pour le webhook.
-  token: process.env.SANITY_API_TOKEN, // ESSENTIEL : Le token qui donne les droits de lecture.
+  ...config,
+  useCdn: false,
+  token: process.env.SANITY_API_TOKEN, // C'est cette variable qui est cruciale
 })
