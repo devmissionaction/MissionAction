@@ -56,6 +56,8 @@ export async function POST(req: Request) {
     const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 });
     const priceIdFromStripe = lineItems.data[0]?.price?.id;
 
+    console.log("ID de prix reçu par le webhook de Stripe:", priceIdFromStripe);
+
     if (!priceIdFromStripe) {
       console.error("Aucun Price ID trouvé dans les line items pour la session:", session.id);
       return new Response('Price ID not found in line items', { status: 400 });
