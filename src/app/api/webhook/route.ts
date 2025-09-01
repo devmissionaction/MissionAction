@@ -1,25 +1,26 @@
 import { NextResponse } from 'next/server'
+import { Resend } from 'resend'
 import Stripe from 'stripe'
+import { client } from '@/lib/sanity'
 
-// Uniquement pour le débogage, on simplifie au maximum
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+// Initialisation des clients
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: '2025-07-30.basil',
+});
+const resend = new Resend(process.env.RESEND_API_KEY!);
 
 export async function POST(req: Request) {
-  // --- LOG N°1 : Est-ce que la fonction est même appelée ? ---
-  console.log(">>> [WEBHOOK DÉBUT] Requête reçue par /api/webhook.");
-
   const sig = req.headers.get('stripe-signature');
   let body: string;
   try {
     body = await req.text();
   } catch (err) {
-    console.error(">>> [WEBHOOK ERREUR] Impossible de lire le corps de la requête.", err);
+    console.error("Erreur de lecture du corps de la requête", err);
     return new Response('Could not read request body', { status: 400 });
   }
-  
+
   if (!sig || !process.env.STRIPE_WEBHOOK_SECRET) {
-    // --- LOG N°2 : Est-ce que les secrets sont bien chargés ? ---
-    console.error(">>> [WEBHOOK ERREUR] Signature ou secret manquant. Vérifiez les variables d'environnement sur Vercel !");
+    console.error("Secret du webhook ou signature manquante.");
     return new Response('Webhook secret not configured', { status: 500 });
   }
 
@@ -30,21 +31,75 @@ export async function POST(req: Request) {
       sig,
       process.env.STRIPE_WEBHOOK_SECRET!
     );
-    // --- LOG N°3 : La signature est-elle valide ? ---
-    console.log(`>>> [WEBHOOK SUCCÈS] Événement vérifié avec succès: ${event.type}`);
-
   } catch (err: any) {
-    // --- LOG N°4 : POINT DE CRASH LE PLUS PROBABLE ---
-    console.error(`>>> [WEBHOOK ERREUR SIGNATURE] Échec de la vérification : ${err.message}`);
-    console.error(">>> Cause probable : Le 'STRIPE_WEBHOOK_SECRET' sur Vercel ne correspond pas à celui du Dashboard Stripe.");
+    console.error(`Erreur de vérification de la signature Stripe: ${err.message}`);
     return new Response(`Webhook Error: ${err.message}`, { status: 400 });
   }
 
-  // Si on arrive jusqu'ici, la connexion Stripe <> Vercel est BONNE.
-  // On peut ajouter le reste de la logique après.
+  // Si l'événement est un paiement réussi, on continue
   if (event.type === 'checkout.session.completed') {
-    console.log(">>> [WEBHOOK INFO] Session de paiement terminée. Traitement en cours...");
-    // Ici, vous remettriez votre logique Sanity et Resend.
+    const session = event.data.object as Stripe.Checkout.Session;
+
+    // Récupération du priceId depuis la session
+    const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 });
+    const priceIdFromStripe = lineItems.data[0]?.price?.id;
+
+    // --- LOG DE DÉBOGAGE CRUCIAL ---
+    // Cette ligne va nous montrer l'ID exact que nous devons vérifier dans Sanity.
+    console.log(`ID de prix reçu par Stripe: ${priceIdFromStripe}`);
+
+    if (!priceIdFromStripe) {
+      console.error("Aucun Price ID trouvé pour la session:", session.id);
+      return new Response('Price ID not found', { status: 400 });
+    }
+
+    // Requête Sanity pour trouver le document correspondant
+    const query = `*[_type == "issue" && stripePriceId == $priceId][0]{
+      title,
+      "pdfUrl": pdf.asset->url
+    }`;
+
+    try {
+      const numero = await client.fetch(query, { priceId: priceIdFromStripe });
+
+      // C'est ici que l'erreur 404 se produisait.
+      if (!numero || !numero.pdfUrl) {
+        console.error(`ÉCHEC de la recherche Sanity: Aucun numéro trouvé avec le stripePriceId: ${priceIdFromStripe}`);
+        return new Response('Numero or PDF URL not found', { status: 404 });
+      }
+
+      console.log(`SUCCÈS de la recherche Sanity: Numéro "${numero.title}" trouvé.`);
+      
+      const email = session.customer_details?.email;
+      if (!email) {
+        console.error("Email du client non trouvé:", session.id);
+        return new Response('Customer email not found', { status: 200 });
+      }
+
+      // Récupération et envoi du PDF par email
+      const pdfResponse = await fetch(numero.pdfUrl);
+      if (!pdfResponse.ok) throw new Error(`Échec de la récupération du PDF: ${pdfResponse.statusText}`);
+      
+      const pdfBuffer = await pdfResponse.arrayBuffer();
+      const pdfBase64 = Buffer.from(pdfBuffer).toString("base64");
+
+      await resend.emails.send({
+        from: 'revue@mission-action.com',
+        to: email,
+        subject: `Votre achat : ${numero.title}`,
+        html: `<p>Merci pour votre achat ! Vous trouverez votre numéro "${numero.title}" en pièce jointe.</p>`,
+        attachments: [{
+            filename: `${numero.title}.pdf`,
+            content: pdfBase64,
+        }],
+      });
+
+      console.log(`Email envoyé avec succès à ${email} pour le numéro ${numero.title}.`);
+
+    } catch (err) {
+      console.error("Erreur lors du traitement Sanity ou Resend:", err);
+      return new Response('Internal Server Error', { status: 500 });
+    }
   }
 
   return NextResponse.json({ received: true });
