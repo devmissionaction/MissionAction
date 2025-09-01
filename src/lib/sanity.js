@@ -1,22 +1,23 @@
-// src/lib/sanity.js
 import { createClient } from '@sanity/client'
 
-const config = {
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'mafzawab',
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
-  apiVersion: '2024-01-01',
-}
+// Assurez-vous que ces variables d'environnement existent sur Vercel
+const projectId = process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'mafzawab';
+const dataset = process.env.NEXT_PUBLIC_SANITY_DATASET || 'production';
+const apiVersion = '2024-01-01';
 
-// Client pour le navigateur (utilise le cache CDN)
+// Client public pour le site
 export const client = createClient({
-  ...config,
+  projectId,
+  dataset,
+  apiVersion,
   useCdn: true,
-})
+});
 
-// Client pour le serveur (webhook, etc.)
-// N'utilise pas le cache et doit avoir un token pour s'authentifier
+// Client authentifié pour le serveur (webhook)
 export const serverClient = createClient({
-  ...config,
-  useCdn: false,
-  token: process.env.SANITY_API_TOKEN, // C'est cette variable qui est cruciale
-})
+  projectId,
+  dataset,
+  apiVersion,
+  useCdn: false, // Ne pas utiliser le cache
+  token: process.env.SANITY_API_TOKEN, // Le token d'authentification
+});
