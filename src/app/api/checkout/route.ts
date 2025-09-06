@@ -11,33 +11,32 @@ export async function POST(req: Request) {
     const { numeroSlug } = await req.json()
 
     // --- MODIFICATION 1 ---
-    // On récupère l'_id en plus du reste
+    // On récupère TOUT ce dont on aura besoin plus tard
     const numero = await client.fetch(
       `*[_type == "issue" && slug.current == $slug][0]{
-        _id, // On ajoute l'ID du document
         title,
-        stripePriceId 
+        stripePriceId,
+        "pdfUrl": pdf.asset->url // On récupère l'URL complète du PDF
       }`,
       { slug: numeroSlug }
     )
 
-    if (!numero || !numero.stripePriceId) {
-      return NextResponse.json({ error: 'Numéro introuvable ou sans priceId' }, { status: 404 })
+    if (!numero || !numero.stripePriceId || !numero.pdfUrl) {
+      return NextResponse.json({ error: 'Données du numéro incomplètes' }, { status: 404 })
     }
 
     const session = await stripe.checkout.sessions.create({
       payment_method_types: ['card'],
       mode: 'payment',
-      line_items: [
-        {
+      line_items: [{
           price: numero.stripePriceId,
           quantity: 1,
-        },
-      ],
+      }],
       // --- MODIFICATION 2 ---
-      // On passe l'ID de Sanity dans les métadonnées de la session
+      // On stocke toutes les infos nécessaires dans les métadonnées
       metadata: {
-        sanityDocumentId: numero._id,
+        issueTitle: numero.title,
+        pdfUrl: numero.pdfUrl,
       },
       success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/merci?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/annule`,
