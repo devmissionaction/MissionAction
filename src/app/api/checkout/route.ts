@@ -16,7 +16,7 @@ export async function POST(req: Request) {
       `*[_type == "issue" && slug.current == $slug][0]{
         title,
         stripePriceId,
-        "pdfUrl": pdf.asset->url // On récupère l'URL complète du PDF
+        "pdfUrl": pdf.asset->url
       }`,
       { slug: numeroSlug }
     )
