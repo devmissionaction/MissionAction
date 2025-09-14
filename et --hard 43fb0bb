@@ -1,0 +1,42 @@
+[33mbbc3a96[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m Implementation du système de livraison par lien de téléchargement, modif dans success
+[33m73197fe[m Implementation du système de livraison par lien de téléchargement
+[33m0e4e5e6[m Last changes in webhook & chackout
+[33m6fb4675[m Last changes in webhook
+[33m4d7e1bb[m Changes in webhook and checkout
+[33m33c0b5f[m Changes with lib sanity bis
+[33m951c834[m Changes with id sanity
+[33m6efd925[m Changes with lib config bis
+[33mea8f97c[m Changes with lib config
+[33mfef81d1[m Final changes in webhook
+[33m64f095f[m Debog test wabhook
+[33m7f1526c[m Changes in webhook, add console log
+[33m3e29f64[m Changes in webhook and lib sanity
+[33m17397e2[m Changes in webhook/route.ts
+[33m43fb0bb[m Remove attachements
+[33me8eada9[m Modification in base64
+[33m1e6146a[m Modification in webhook mail
+[33mac6a991[m Modification email final
+[33mc1c9fb5[m Modification email
+[33m046186c[m Clean code
+[33ma04b8f3[m Changes in css
+[33me8e51f6[m Changes in checkout
+[33mc996c5a[m Changes in numeros/[slug]/page.tsx
+[33m3babe4d[m Changes in checkout - sanity env var
+[33m5f6d09f[m Changes in checkout - sanity env
+[33mecd7057[m Changes in checkout - sanity dyn
+[33m6208fd5[m Changes in checkout
+[33m4286704[m Changes in webhook stripe
+[33mbd89266[m Remove middleware.js
+[33mea0dbe1[m Manage final errors
+[33m39b86e2[m Manage props error on artciles/[slug]/page
+[33m922847d[m Manage props error last
+[33m095a06b[m Manage props error
+[33m76fa298[m Manage props error
+[33m83248d4[m Manage props error
+[33mb179074[m Manage props error
+[33m21da7ad[m Manage props error
+[33m3a4ed73[m Manage props error
+[33m9da6b8a[m Replace any with PortableTextBlock[] types
+[33mb78c218[m Ignore ESLint errors during Vercel build
+[33m75ea319[m Premier commit
+[33m15b6d25[m Initial commit from Create Next App
