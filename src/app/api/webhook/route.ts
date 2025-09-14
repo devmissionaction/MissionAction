@@ -1,24 +1,17 @@
 import { NextResponse } from 'next/server'
-import { Resend } from 'resend'
 import Stripe from 'stripe'
-import sanityClient from '@sanity/client'
 
 // ----- Initialisation Stripe -----
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2025-07-30.basil', // Assurez-vous que cette version est correcte
+  apiVersion: '2025-07-30.basil',
 })
 
-// ----- Initialisation Resend -----
-const resend = new Resend(process.env.RESEND_API_KEY!)
-
-// ----- Initialisation Sanity -----
-const client = sanityClient({
-  projectId: process.env.SANITY_PROJECT_ID!,
-  dataset: process.env.SANITY_DATASET!,
-  apiVersion: '2023-08-01',
-  token: process.env.SANITY_API_TOKEN, // si lecture privée nécessaire
-  useCdn: false,
-})
+// Lecture du corps en raw pour la vérification de signature
+export const config = {
+  api: {
+    bodyParser: false,
+  },
+}
 
 export async function POST(req: Request) {
   // Lecture de la signature et du corps de la requête
@@ -44,70 +37,14 @@ export async function POST(req: Request) {
     return new Response(`Webhook Error: ${err.message}`, { status: 400 })
   }
 
-  // ----- Gestion du paiement réussi -----
+  // ----- Gestion des événements -----
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object as Stripe.Checkout.Session
-    const email = session.customer_details?.email || session.customer_email
-
-    if (!email) {
-      console.error('Email du client non trouvé dans la session Stripe')
-      return new Response('Customer email not found', { status: 400 })
-    }
-
-    // Récupérer le priceId de l'article acheté
-    const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 1 })
-    const priceIdFromStripe = lineItems.data[0]?.price?.id
-
-    if (!priceIdFromStripe) {
-      console.error('Pas de priceId trouvé pour cette session')
-      return new Response('No priceId', { status: 400 })
-    }
-
-    // Requête Sanity pour récupérer le document correspondant
-    const query = `*[_type == "numero" && priceId == $priceId][0]{
-      title,
-      "pdfUrl": pdf.asset->url
-    }`
-    const numero = await client.fetch(query, { priceId: priceIdFromStripe })
-
-    if (!numero || !numero.pdfUrl) {
-      console.error('Numéro ou URL du PDF non trouvé pour le priceId', priceIdFromStripe)
-      return new Response('Numero or PDF URL not found', { status: 404 })
-    }
-
-    try {
-      // Récupérer le contenu du PDF depuis Sanity
-      const pdfResponse = await fetch(numero.pdfUrl)
-      if (!pdfResponse.ok) {
-        throw new Error(`Failed to fetch PDF: ${pdfResponse.statusText}`)
-      }
-      const pdfBuffer = await pdfResponse.arrayBuffer()
-      const pdfBase64 = Buffer.from(pdfBuffer).toString("base64")
-
-      // Envoyer l'email avec Resend
-      await resend.emails.send({
-        from: 'revue@mission-action.com', // Domaine vérifié dans Resend
-        to: email,
-        subject: `Merci pour votre achat : ${numero.title}`,
-        html: `
-          <div style="font-family: sans-serif;">
-            <h1>Merci pour votre achat !</h1>
-            <p>Vous trouverez votre numéro "${numero.title}" en pièce jointe.</p>
-          </div>
-        `,
-     /*    attachments: [
-          {
-            filename: `${numero.title}.pdf`,
-            content: pdfBase64, 
-          },
-        ], */
-      })
-
-      console.log(`Email envoyé à ${email} avec ${numero.title}`)
-    } catch (err) {
-      console.error('Erreur lors de la récupération du PDF ou de l\'envoi de l\'email', err)
-      // On ne renvoie pas d'erreur au webhook Stripe pour ne pas bloquer le paiement
-    }
+    console.log(`Paiement réussi pour la session ${session.id}`)
+    // Aucune action supplémentaire n'est requise ici car le téléchargement
+    // est géré par la page de succès elle-même.
+    // Vous pouvez ajouter d'autres logiques métier si nécessaire,
+    // comme mettre à jour une base de données d'abonnés.
   }
 
   return NextResponse.json({ received: true })
