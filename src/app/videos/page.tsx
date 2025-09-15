@@ -2,7 +2,8 @@
 import { client } from '@/lib/sanity'
 import Image from 'next/image'
 import Link from 'next/link'
-import { SanityImageSource } from '@sanity/image-url'
+// Correction ici : l'importation du type vient d'un sous-chemin
+import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
 import imageUrlBuilder from '@sanity/image-url'
 
 interface Video {
@@ -12,6 +13,7 @@ interface Video {
   coverImage: SanityImageSource
 }
 
+// L'utilisation redevient simple, sans .default
 const builder = imageUrlBuilder(client)
 
 function urlFor(source: SanityImageSource) {
