@@ -1,110 +1,97 @@
-// src/app/videos/page.tsx
 import { client } from '@/lib/sanity'
-import Image from 'next/image'
 import Link from 'next/link'
-// Correction ici : l'importation du type vient d'un sous-chemin
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types'
-import imageUrlBuilder from '@sanity/image-url'
 
-// Définition des types de données
-interface Video {
+type VideosPageData = {
+  heroImage: {
+    asset: {
+      url: string
+    }
+    alt?: string
+  }
+}
+
+type Video = {
   _id: string
   title: string
   link: string
-  coverImage: SanityImageSource
-}
-
-interface VideosPageData {
-  title: string
-  description: string
-  heroImage: SanityImageSource
-}
-
-// Configuration du builder d'URL d'image
-const builder = imageUrlBuilder(client)
-
-function urlFor(source: SanityImageSource) {
-  return builder.image(source)
-}
-
-// Fonctions de récupération des données
-async function getVideos() {
-  const query = `*[_type == "video"] | order(_createdAt desc){
-    _id,
-    title,
-    link,
-    coverImage
-  }`
-  const videos = await client.fetch(query)
-  return videos as Video[]
-}
-
-async function getVideosPageData() {
-  const query = `*[_type == "videosPage"][0]{
-    title,
-    description,
-    heroImage
-  }`
-  const data = await client.fetch(query)
-  return data as VideosPageData
+  coverImage?: {
+    asset: {
+      url: string
+    }
+    alt?: string
+  }
 }
 
 export const revalidate = 60
 
 export default async function VideosPage() {
-  const [videos, videosPageData] = await Promise.all([
-    getVideos(),
-    getVideosPageData()
+  // Récupération de l'image hero et des vidéos en parallèle
+  const [videosPageData, videos] = await Promise.all([
+    client.fetch<VideosPageData>(`
+      *[_type == "videosPage"][0]{
+        heroImage {
+          asset -> { url },
+          alt
+        }
+      }
+    `),
+    client.fetch<Video[]>(`
+      *[_type == "video"] | order(_createdAt desc){
+        _id,
+        title,
+        link,
+        coverImage {
+          asset -> { url },
+          alt
+        }
+      }
+    `)
   ])
 
   return (
     <main>
       {/* Section Hero */}
-      {videosPageData && (
-        <header className="relative w-full h-96 md:h-[500px] flex items-center justify-center text-center">
-          <Image
-            src={urlFor(videosPageData.heroImage).url()}
-            alt={videosPageData.title}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover absolute inset-0"
+      {videosPageData?.heroImage?.asset?.url && (
+        <section className="w-full h-screen relative">
+          <img
+            src={videosPageData.heroImage.asset.url}
+            alt={videosPageData.heroImage.alt || 'Image de couverture'}
+            className="object-cover w-full h-full"
           />
-          <div className="relative z-10 p-4">
-            <h1 className="text-4xl md:text-6xl font-extrabold text-white text-shadow-lg">
-              {videosPageData.title}
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <h1 className="text-white font-bold text-center text-title">
+              Programme vidéo
             </h1>
-            <p className="mt-4 text-xl md:text-2xl text-white text-shadow-md">
-              {videosPageData.description}
-            </p>
           </div>
-        </header>
+        </section>
       )}
 
       {/* Contenu principal avec la grille de vidéos */}
-      <section className="container mx-auto p-4 md:p-8 mt-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <section className="max-w-6xl mx-auto px-6 py-16">
+        <h2 className="text-3xl font-bold mb-12 text-center">Toutes les vidéos</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {videos.map((video) => (
             <Link
               key={video._id}
               href={video.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="group block rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
+              className="relative block rounded-lg overflow-hidden shadow-lg group h-96"
             >
-              <div className="relative w-full aspect-square">
-                <Image
-                  src={urlFor(video.coverImage).width(500).height(500).url()}
-                  alt={`Couverture de la vidéo : ${video.title}`}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                />
-              </div>
-              <div className="p-4 bg-white dark:bg-gray-800">
-                <h2 className="text-xl font-semibold text-gray-800 dark:text-white group-hover:underline">
+              {video.coverImage?.asset?.url && (
+                <div className="w-full h-full relative">
+                  <img
+                    src={video.coverImage.asset.url}
+                    alt={video.coverImage.alt || video.title}
+                    className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                </div>
+              )}
+              <div className="absolute inset-0 bg-black/50" />
+              <div className="absolute inset-0 flex items-center justify-center">
+                <h3 className="text-white text-2xl font-semibold px-4 text-center drop-shadow-lg">
                   {video.title}
-                </h2>
+                </h3>
               </div>
             </Link>
           ))}
