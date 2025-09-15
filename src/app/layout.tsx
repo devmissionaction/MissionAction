@@ -39,6 +39,7 @@ export default function RootLayout({
             <Link href="/" className="navbar-text">Accueil</Link>
             <Link href="/about" className="navbar-text">Qui sommes nous ?</Link>
             <Link href="/numeros" className="navbar-text">Numéros</Link>
+            <Link href= "/videos">Programme vidéo </Link>
             <Link href="/contact" className="navbar-text">Contact</Link>
           </nav>
         </header>
