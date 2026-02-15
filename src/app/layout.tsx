@@ -38,6 +38,7 @@ export default function RootLayout({
           <nav className="hidden md:flex gap-8 text-md font-bold justify-center flex-1">
             <Link href="/" className="navbar-text">Accueil</Link>
             <Link href="/about" className="navbar-text">Qui sommes nous ?</Link>
+            <Link href="/festival" className="navbar-text">Le Festival</Link>
             <Link href="/numeros" className="navbar-text">Numéros</Link>
             <Link href= "/videos">Programme vidéo </Link>
             <Link href="/contact" className="navbar-text">Contact</Link>
