@@ -10,6 +10,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-avega: 'Avega Italic', sans-serif;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -29,7 +30,7 @@ body {
 
 @font-face {
   font-family: 'Avega Italic';
-  src: url('/fonts/Avega-Italic.otf') format('opentype');
+  src: url('/fonts/avega-italic.otf') format('opentype');
   font-style: italic;
   font-weight: normal;
 }
@@ -44,7 +45,6 @@ body {
   font-family: 'Avega Italic', sans-serif;
   background-color: black;
   color: white;
-  font-size: 14px;
   padding-left: 2px;
   padding-right: 2px;
 }
@@ -52,7 +52,6 @@ body {
   font-family: 'Avega Italic', sans-serif;
   background-color: black;
   color: white;
-  font-size: 14px;
   padding-left: 2px;
   padding-right: 2px;
 }

@@ -1,8 +1,11 @@
 'use client'
 
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
 import { PortableText } from '@portabletext/react'
 import type { PortableTextBlock } from '@portabletext/types'
-import { FiCalendar, FiUsers, FiEdit3 } from 'react-icons/fi'
+import { FiCalendar, FiUsers, FiEdit3, FiHeart } from 'react-icons/fi'
+import DonateButton from '@/app/components/DonateButton'
 
 type FestivalPageData = {
   heroImage?: {
@@ -36,6 +39,9 @@ export default function FestivalPageClient({
   data: FestivalPageData
   partners: FestivalPartner[]
 }) {
+  const searchParams = useSearchParams()
+  const donationSuccess = searchParams.get('donation') === 'success'
+
   return (
     <main>
       {/* HERO */}
@@ -61,7 +67,7 @@ export default function FestivalPageClient({
       )}
 
       {/* PRÉSENTATION + AFFICHE */}
-      <section className="bg-[#fdfcf9] py-16 sm:py-24 px-6">
+      <section className=" py-16 sm:py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             <div className="prose prose-lg max-w-none">
@@ -110,7 +116,7 @@ export default function FestivalPageClient({
 
       {/* PARTENAIRES */}
       {partners.length > 0 && (
-        <section className="py-16 sm:py-24 px-6 bg-gray-100">
+        <section className="py-16 sm:py-24 px-6">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-4 flex items-center justify-center gap-3">
               <FiUsers className="text-red-700" aria-hidden />
@@ -164,29 +170,39 @@ export default function FestivalPageClient({
       )}
 
       {/* INSCRIPTION */}
-      <section className="py-16 sm:py-24 px-6 bg-[#fdfcf9]">
+      <section className="py-16 sm:py-24 px-6 ">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
-            <FiEdit3 className="text-red-700" aria-hidden />
             Inscription
           </h2>
           <p className="text-gray-600 mb-8">
             Réservez votre place au festival en vous inscrivant en ligne.
           </p>
-          {data?.inscriptionUrl ? (
-            <a
-              href={data.inscriptionUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-block bg-black text-white font-bold px-8 py-4 rounded hover:bg-gray-800 transition navbar-text"
-            >
-              {data.inscriptionLabel || "S'inscrire en ligne"}
-            </a>
-          ) : (
-            <p className="text-gray-500 text-sm">
-              Lien d’inscription à configurer dans Sanity (festivalPage → inscriptionUrl).
+          <Link
+            href="/inscription"
+            className="inline-block bg-black text-white font-bold px-8 py-4 rounded hover:bg-gray-800 transition"
+          >
+            S&apos;inscrire au Festival
+          </Link>
+        </div>
+      </section>
+
+      {/* DON */}
+      <section className="py-16 sm:py-24 px-6 bg-white">
+        <div className="max-w-2xl mx-auto text-center">
+          {donationSuccess && (
+            <p className="mb-6 rounded-lg bg-green-50 text-green-800 px-4 py-3 font-medium">
+              Merci pour votre don ! Votre soutien compte beaucoup pour nous.
             </p>
           )}
+          <h2 className="text-3xl font-bold mb-4 flex items-center justify-center gap-3">
+            <FiHeart className="text-red-700" aria-hidden />
+            Soutenir le festival
+          </h2>
+          <p className="text-gray-600 mb-8">
+            Faites un don pour soutenir Mission Action et le festival. Chaque contribution compte!
+          </p>
+          <DonateButton />
         </div>
       </section>
     </main>

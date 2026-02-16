@@ -52,13 +52,13 @@ export default async function VideosPage() {
     <main>
       {/* Section Hero */}
       {videosPageData?.heroImage?.asset?.url && (
-        <section className="w-full h-screen relative">
+        <section className="w-full h-[70vh] min-h-[400px] relative">
           <img
             src={videosPageData.heroImage.asset.url}
             alt={videosPageData.heroImage.alt || 'Image de couverture'}
             className="object-cover w-full h-full"
           />
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/45 flex items-center justify-center">
             <h1 className="text-white font-bold text-center text-title">
               Programme vidéo
             </h1>

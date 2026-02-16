@@ -46,7 +46,7 @@ export default async function HomePage() {
 
   return (
     <main>
-      <section className="w-full h-screen relative">
+      <section id="hero" className="w-full h-[70vh] min-h-[400px] relative">
         {home?.heroImage?.asset?.url && (
           <img
             src={home.heroImage.asset.url}
@@ -54,9 +54,9 @@ export default async function HomePage() {
             className="object-cover w-full h-full"
           />
         )}
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+        <div className="absolute inset-0 bg-black/45 flex items-center justify-center">
           <h1
-            className="text-white text-5xl font-bold text-center text-title"
+            className="text-white text-5xl font-bold text-center text-title uppercase font-avega-italic"
           >
             Mission Action
           </h1>

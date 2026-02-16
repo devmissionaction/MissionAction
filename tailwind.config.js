@@ -2,7 +2,7 @@
 module.exports = {
   content: [],
   theme: {
-    extend: {},
+    extend: { fontFamily: { avega: ['Avega Italic', 'sans-serif'] } }
   },
   plugins: [],
 }

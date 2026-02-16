@@ -25,13 +25,13 @@ export default async function ContactPage() {
   return (
     <main>
       {data?.heroImage?.asset?.url && (
-        <section className="w-full h-screen relative">
+        <section className="w-full h-[70vh] min-h-[400px] relative">
           <img
             src={data.heroImage.asset.url}
             alt={data.heroImage.alt || 'Image contact'}
             className="object-cover w-full h-full"
           />
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/45 flex items-center justify-center">
             <h1 className="text-white text-5xl sm:text-6xl font-bold text-center text-title">
               Contact
             </h1>

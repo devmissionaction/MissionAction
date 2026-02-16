@@ -54,7 +54,7 @@ export default async function NumeroPage({ params }: Params) {
 
   return (
     <main>
-      <section className="min-h-screen flex flex-col md:flex-row items-center justify-center gap-12 p-8 max-w-6xl mx-auto">
+      <section className="min-h-screen flex flex-col md:flex-row items-center justify-center gap-12 px-8 py-24 max-w-6xl mx-auto">
         {issue.coverImage?.asset?.url && (
           <img
             src={issue.coverImage.asset.url}

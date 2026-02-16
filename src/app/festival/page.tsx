@@ -1,3 +1,4 @@
+import { Suspense } from 'react'
 import { client } from '@/lib/sanity'
 import FestivalPageClient from './FestivalPageClient'
 import type { PortableTextBlock } from '@portabletext/types'
@@ -15,6 +16,7 @@ type FestivalPageData = {
   programme?: PortableTextBlock[]
   inscriptionUrl?: string
   inscriptionLabel?: string
+  partenaires?: FestivalPartner[]
 }
 
 type FestivalPartner = {
@@ -40,7 +42,14 @@ export default async function FestivalPage() {
     },
     programme,
     inscriptionUrl,
-    inscriptionLabel
+    inscriptionLabel,
+    partenaires[]->{
+      _id,
+      name,
+      logo { asset -> { url } },
+      url,
+      order
+    }
   }`)
 
   const partners: FestivalPartner[] = await client.fetch(
@@ -53,10 +62,21 @@ export default async function FestivalPage() {
     }`
   )
 
+  // Partenaires : priorité au champ partenaires de la page, sinon documents festivalPartner
+  const partenairesFromPage = data?.partenaires?.filter(Boolean) ?? []
+  const partnersList =
+    partenairesFromPage.length > 0
+      ? [...partenairesFromPage].sort(
+          (a, b) => (a.order ?? 0) - (b.order ?? 0)
+        )
+      : partners
+
   return (
-    <FestivalPageClient
-      data={data}
-      partners={partners}
-    />
+    <Suspense fallback={null}>
+      <FestivalPageClient
+        data={data}
+        partners={partnersList}
+      />
+    </Suspense>
   )
 }

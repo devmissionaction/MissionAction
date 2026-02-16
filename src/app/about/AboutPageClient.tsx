@@ -34,13 +34,13 @@ export default function AboutPageClient({
     <main>
       {/* HERO FULL SCREEN */}
       {data.heroImage?.asset?.url && (
-        <section className="w-full h-screen relative">
+        <section className="w-full h-[70vh] min-h-[400px] relative">
           <img
             src={data.heroImage.asset.url}
             alt={data.heroImage.alt || 'Image qui sommes-nous'}
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+          <div className="absolute inset-0 bg-black/45 flex items-center justify-center">
             <h1 className="text-white text-4xl font-bold text-center text-title">Qui sommes-nous ?</h1>
           </div>
         </section>

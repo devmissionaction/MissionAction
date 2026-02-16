@@ -39,7 +39,7 @@ export default async function ArticlePage({ params }: Props) {
   if (!post) return <div>Article introuvable.</div>
 
   return (
-    <main className="max-w-3xl mx-auto p-6">
+    <main className="max-w-3xl mx-auto px-6 py-24">
       <h1 className="text-3xl font-bold mb-4">{post.title}</h1>
       {post.mainImage?.asset?.url && (
         <img
