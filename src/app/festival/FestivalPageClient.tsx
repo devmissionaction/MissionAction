@@ -119,7 +119,6 @@ export default function FestivalPageClient({
         <section className="py-16 sm:py-24 px-6">
           <div className="max-w-5xl mx-auto">
             <h2 className="text-3xl font-bold text-center mb-4 flex items-center justify-center gap-3">
-              <FiUsers className="text-red-700" aria-hidden />
               Partenaires
             </h2>
             <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">

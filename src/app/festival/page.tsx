@@ -70,7 +70,8 @@ export default async function FestivalPage() {
           (a, b) => (a.order ?? 0) - (b.order ?? 0)
         )
       : partners
-
+  console.log("Partenaires reçus :", partners); // Regardez dans la console de votre navigateur
+  // ... reste du code
   return (
     <Suspense fallback={null}>
       <FestivalPageClient
