@@ -36,7 +36,7 @@ export default function VideoCard({ video }: VideoCardProps) {
           {/* Image statique (premier frame) - toujours affichée */}
           {isGif && (
             <img
-              src={`${coverImageUrl}?frame=0`}
+              src={`${coverImageUrl}?frame=1`}
               alt={video.title}
               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
                 isHovered ? 'opacity-0' : 'opacity-100'
